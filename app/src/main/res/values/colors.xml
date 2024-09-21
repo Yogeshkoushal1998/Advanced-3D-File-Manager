@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#c0392b</color>
+    <color name="colorPrimaryDark">#962d22</color>
+    <color name="colorAccent">#dcdcdc</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="ic_launcher_background">#9ECFE0</color>
+    <color name="black">#000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_80">#CC000000</color>
+    <color name="screen_color_white_theme">#F2F3F7</color>
+    <color name="card_shadow_light_white_theme">#DEFFFFFF</color>
+    <color name="card_shadow_dark_white_theme">#C7D4E6</color>
+    <color name="card_color">#F2F3F7</color>
+    <color name="dia_bg_color_white_theme">#D9EFEEEE</color>
+
+    <color name="txt_blue">#136af6</color>
+    <color name="red">#f63030</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="search_text_color">#4F4F4F</color>
+    <color name="search_hint_text_color">#BDBDBD</color>
+    <color name="transparent">#0000ffff</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+
+
+    <color name="color_717171">#717171</color>
+    <color name="color_606060">#606060</color>
+    <color name="toolbarBackColor">#F2F3F7</color>
+    <color name="color_333333">#333333</color>
+    <color name="common_btn_fill_color">#F3F4F8</color>
+</resources>

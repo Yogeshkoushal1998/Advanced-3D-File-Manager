@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soup.neumorphism.NeumorphCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parentCardView"
+    style="@style/neuCardStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:neumorph_shapeAppearance="@style/CustomShapeAppearance2">
+
+    <LinearLayout
+        android:id="@+id/llParentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/_16sdp">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/ivDocTypeIcon"
+                android:layout_width="@dimen/_21sdp"
+                android:layout_height="@dimen/_28sdp"
+                android:layout_gravity="center"
+                android:contentDescription="@string/images"
+                app:srcCompat="@drawable/ic_neu_pdf" />
+
+            <!-- <androidx.appcompat.widget.AppCompatCheckBox
+                 android:id="@+id/checkSelect"
+                 android:layout_width="@dimen/_21sdp"
+                 android:layout_height="@dimen/_21sdp"
+                 android:layout_gravity="center"
+                 android:background="@android:color/transparent"
+                 android:button="@drawable/doc_checkbox_selector"
+                 android:visibility="gone" />-->
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvFileName"
+                style="@style/neuTextStyleneuTextStyle_13ssp_serif_bold_black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="middle"
+                android:singleLine="true"
+                android:text="@string/dash" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvFileSize"
+                    style="@style/neuTextStyle_10ssp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:singleLine="true"
+                    android:text="@string/dash"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvModifiedTime"
+                    style="@style/neuTextStyle_10ssp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_2sdp"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:singleLine="true"
+                    android:text="@string/dash"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tvFileSize"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</soup.neumorphism.NeumorphCardView>

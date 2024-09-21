@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#c0392b</color>
+    <color name="colorPrimaryDark">#962d22</color>
+    <color name="colorAccent">#dcdcdc</color>
+    <color name="black">#ffffff</color>
+    <color name="black_50">#80ffffff</color>
+    <color name="black_80">#CCffffff</color>
+    <color name="screen_color_white_theme">#1A1A1A</color>
+    <color name="card_shadow_light_white_theme">#353535</color>
+    <color name="card_shadow_dark_white_theme">#A6000000</color>
+    <color name="dia_bg_color_white_theme">#D9303234</color>
+    <color name="card_color">#1A1A1A</color>
+    <color name="search_text_color">#FFFFFF</color>
+    <color name="search_hint_text_color">#80FFFFFF</color>
+
+    <color name="color_717171">#99FFFFFF</color>
+    <color name="color_606060">#B3FFFFFF</color>
+    <color name="toolbarBackColor">#1A1A1A</color>
+    <color name="color_333333">#FFFFFF</color>
+    <color name="common_btn_fill_color">#171717</color>
+
+</resources>

@@ -1,0 +1,159 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">?attr/isLightTheme
+        </item>
+        <item name="android:navigationBarColor">@color/screen_color_white_theme</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">?attr/isLightTheme</item>
+        <item name="android:statusBarColor">@color/screen_color_white_theme</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">true</item>
+        <item name="android:windowSplashScreenAnimatedIcon" tools:targetApi="s">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
+
+    <style name="CustomShapeAppearance">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">@dimen/_6sdp</item>
+    </style>
+
+
+    <style name="CustomShapeAppearance1">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">@dimen/_50sdp</item>
+    </style>
+
+    <style name="CustomShapeAppearance2">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">@dimen/_6sdp</item>
+    </style>
+
+    <style name="CustomShapeAppearance4">
+        <item name="neumorph_cornerFamily">oval</item>
+        <item name="neumorph_cornerSize">@dimen/_50sdp</item>
+    </style>
+
+    <style name="CustomShapeAppearance5">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">0dp</item>
+    </style>
+
+    <style name="CustomShapeAppearance9">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">@dimen/_26sdp</item>
+    </style>
+
+    <style name="CustomShapeAppearance10">
+        <item name="neumorph_cornerFamily">rounded</item>
+        <item name="neumorph_cornerSize">@dimen/_32sdp</item>
+    </style>
+
+    <style name="neuCardStyle">
+        <item name="neumorph_shadowColorLight">@color/card_shadow_light_white_theme</item>
+        <item name="neumorph_shadowColorDark">@color/card_shadow_dark_white_theme</item>
+        <item name="neumorph_backgroundColor">@color/card_color</item>
+        <item name="neumorph_shadowElevation">@dimen/_4sdp</item>
+    </style>
+
+    <style name="neuTextStyle">
+        <item name="neumorph_shadowColorLight">@color/card_shadow_light_white_theme</item>
+        <item name="neumorph_shadowColorDark">@color/card_shadow_dark_white_theme</item>
+        <item name="neumorph_backgroundColor">@color/card_color</item>
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:fontFamily">@font/almendra_bold</item>
+        <item name="android:textColor">@color/black_80</item>
+    </style>
+
+    <style name="neuTextStyle_10ssp">
+        <item name="neumorph_shadowColorLight">@color/card_shadow_light_white_theme</item>
+        <item name="neumorph_shadowColorDark">@color/card_shadow_dark_white_theme</item>
+        <item name="neumorph_backgroundColor">@color/card_color</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:textColor">@color/black_50</item>
+    </style>
+
+
+    <style name="neuTextStyleneuTextStyle_13ssp_serif_bold_black">
+        <item name="neumorph_shadowColorLight">@color/card_shadow_light_white_theme</item>
+        <item name="neumorph_shadowColorDark">@color/card_shadow_dark_white_theme</item>
+        <item name="neumorph_backgroundColor">@color/card_color</item>
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/_13ssp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+
+
+    <style name="neuTextStyle_14ssp_black_80_bold">
+        <item name="neumorph_shadowColorLight">@color/card_shadow_light_white_theme</item>
+        <item name="neumorph_shadowColorDark">@color/card_shadow_dark_white_theme</item>
+        <item name="neumorph_backgroundColor">@color/card_color</item>
+        <item name="android:fontFamily">@font/almendra_bold</item>
+        <item name="android:textSize">@dimen/_14ssp</item>
+        <item name="android:textColor">@color/black_80</item>
+    </style>
+
+
+    <style name="dialogThm">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/dia_bg_color_white_theme</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/screen_color_white_theme</item>
+    </style>
+
+
+    <style name="textAppearance6Thm">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black_50</item>
+    </style>
+
+    <style name="textAppearance10Thm">
+        <item name="android:textSize">@dimen/_12ssp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="textAppearance9Thm">
+        <item name="android:textSize">@dimen/_10ssp</item>
+        <item name="android:textColor">@color/black_50</item>
+    </style>
+
+    <style name="SearchEditTextTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/transparent</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="colorControlHighlight">@color/transparent</item>
+
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+        <item name="android:paddingTop">@dimen/_5sdp</item>
+        <item name="android:paddingBottom">@dimen/_5sdp</item>
+        <item name="android:paddingStart">@dimen/_10sdp</item>
+        <item name="android:paddingEnd">@dimen/_10sdp</item>
+        <item name="android:fadeScrollbars">false</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:scrollbarThumbVertical">@null</item>
+        <item name="android:scrollbarThumbHorizontal">@null</item>
+    </style>
+
+    <style name="expandedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/_20ssp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:fontFamily">@font/almendra_bold</item>
+    </style>
+
+    <style name="collapsedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">@dimen/_16ssp</item>
+        <item name="android:textColor">@color/color_333333</item>
+        <item name="android:fontFamily">@font/almendra_bold</item>
+    </style>
+
+</resources>

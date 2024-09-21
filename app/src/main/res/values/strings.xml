@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">3D File Manager</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="pictures">Pictures</string>
+    <string name="audio">Audio</string>
+    <string name="videos">Videos</string>
+    <string name="zips">Zips</string>
+    <string name="apps">Apps</string>
+    <string name="downloads">Downloads</string>
+    <string name="documents">Documents</string>
+    <string name="_0_kb">0 KB</string>
+    <string name="internal_storage">Internal Storage</string>
+    <string name="sd_storage">Sd Memory Storage</string>
+    <string name="images">string\n</string>
+    <string name="dash">--</string>
+    <string name="search">Search</string>
+
+
+</resources>

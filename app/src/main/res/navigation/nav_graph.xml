@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_storageFragment"
+            app:destination="@id/storageFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_downloadsFragment"
+            app:destination="@id/downloadsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_imagesFragments"
+            app:destination="@id/imagesFragments" />
+        <action
+            android:id="@+id/action_mainFragment_to_zipFragment"
+            app:destination="@id/zipFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_videosFragment"
+            app:destination="@id/videosFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_audioFragment"
+            app:destination="@id/audioFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_appsFragment"
+            app:destination="@id/appsFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_documentsFragment"
+            app:destination="@id/documentsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imagesFragments"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.ImagesFragments"
+        android:label="fragment_images_fragments"
+        tools:layout="@layout/fragment_images_fragments" />
+    <fragment
+        android:id="@+id/videosFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.VideosFragment"
+        android:label="fragment_videos"
+        tools:layout="@layout/fragment_videos" />
+    <fragment
+        android:id="@+id/zipFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.ZipFragment"
+        android:label="fragment_zip"
+        tools:layout="@layout/fragment_zip" />
+    <fragment
+        android:id="@+id/downloadsFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.DownloadsFragment"
+        android:label="fragment_downloads"
+        tools:layout="@layout/fragment_downloads" />
+    <fragment
+        android:id="@+id/storageFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.StorageFragment"
+        android:label="fragment_storage"
+        tools:layout="@layout/fragment_storage" />
+    <fragment
+        android:id="@+id/audioFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.AudioFragment"
+        android:label="fragment_audio"
+        tools:layout="@layout/fragment_audio" />
+    <fragment
+        android:id="@+id/appsFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.AppsFragment"
+        android:label="fragment_apps"
+        tools:layout="@layout/fragment_apps" />
+    <fragment
+        android:id="@+id/documentsFragment"
+        android:name="com.yk.mobile.advanced3dfilemanager.ui.fragments.DocumentsFragment"
+        android:label="fragment_documents"
+        tools:layout="@layout/fragment_documents" />
+</navigation>
