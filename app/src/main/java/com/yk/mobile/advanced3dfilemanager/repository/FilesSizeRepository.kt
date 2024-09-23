@@ -61,16 +61,6 @@ class FilesSizeRepository @Inject constructor(@ApplicationContext private val co
     val isSdCardExist: StateFlow<Boolean> get() = _isSdCardExist
     val sdCardFile: StateFlow<File> get() = _sdCardFile
 
-
-    init {
-//        setSdStorageDetails()
-        //For Internal Storage
-//        calculateFilesSize(Environment.getExternalStorageDirectory(), true)
-        //For External Storage SD Card
-//        calculateFilesSize(sdCardFile.value, false)
-    }
-
-
     suspend fun getTotalAndAvailableInternalMemorySize() {
         val path = Environment.getDataDirectory()
         val stat = StatFs(path.path)
@@ -102,23 +92,6 @@ class FilesSizeRepository @Inject constructor(@ApplicationContext private val co
             _totalSdSize.value = blockSize * totalBlocks
         }
     }
-
-    /*fun getAllCounts() {
-        _internalImageSize.value = imageSizeInternal
-        _internalVideoSize.value = videoSizeInternal
-        _internalAudioSize.value = audioSizeInternal
-        _internalZipsSize.value = zipsSizeInternal
-        _internalAppsSize.value = appsSizeInternal
-        _internalDocumentSize.value = documentSizeInternal
-        _internalDownloadSize.value=downloadsSizeInternal
-        //SD Cards size
-        _sdImageSize.value = imageSizeSd
-        _sdVideoSize.value = videoSizeSd
-        _sdAudioSize.value = audioSizeSd
-        _sdZipsSize.value = zipsSizeSd
-        _sdAppsSize.value = appsSizeSd
-        _sdDocumentSize.value = documentSizeSd
-    }*/
 
 
     private fun calculateFilesSizeDownload(file: File): ArrayList<File> {

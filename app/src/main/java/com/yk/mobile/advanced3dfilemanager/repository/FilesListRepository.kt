@@ -2,11 +2,11 @@ package com.yk.mobile.advanced3dfilemanager.repository
 
 import android.content.Context
 import android.os.Environment
-import androidx.lifecycle.MutableLiveData
 import com.yk.mobile.advanced3dfilemanager.model.MediaModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -28,50 +28,43 @@ class FilesListRepository @Inject constructor(
 
     val isSdCardExist: StateFlow<Boolean> get() = filesSizeRepository.isSdCardExist
 
-    private val _downloadFilesLiveData = MutableLiveData<FilesResult<List<File>>>()
-    val downloadFilesLiveData get() = _downloadFilesLiveData
-
-    private val _imageFilesLiveData = MutableLiveData<FilesResult<List<MediaModel>>>()
-    val imageFilesLiveData get() = _imageFilesLiveData
-
-    private val _documentsFilesLiveData = MutableLiveData<FilesResult<List<File>>>()
-    val documentsFilesLiveData get() = _documentsFilesLiveData
-
-    private val _videosFilesLiveData = MutableLiveData<FilesResult<List<MediaModel>>>()
-    val videosFilesLiveData get() = _videosFilesLiveData
-
-    private fun getDownloadsFilesPath(file: File): ArrayList<File> {
-        val arrayList = ArrayList<File>()
-        val files = file.listFiles()
-        if (files != null) {
-            for (singleFile in files) {
-                if (singleFile.isDirectory && !singleFile.isHidden) {
-                    arrayList.addAll(getDownloadsFilesPath(singleFile))
-                } else {
-                    arrayList.add(singleFile)
-                }
-            }
-        }
-        return arrayList
-    }
+    private val _downloadFilesLiveData =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
 
 
-    suspend fun getDownLoadsFilesList() {
-        _downloadFilesLiveData.postValue(FilesResult.Loading())
-        try {
-            val fileArrayList = getDownloadsFilesPath(
-                Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                )
-            )
-            _downloadFilesLiveData.postValue(FilesResult.Success(fileArrayList))
-        } catch (e: Exception) {
-            _downloadFilesLiveData.postValue(FilesResult.Error("Something Went Wrong"))
-        }
-    }
+    val downloadFilesLiveData: StateFlow<FilesResult<List<File>>> get() = _downloadFilesLiveData
+
+    private val _imageFilesLiveData =
+        MutableStateFlow<FilesResult<List<MediaModel>>>(FilesResult.Loading())
+    val imageFilesLiveData: StateFlow<FilesResult<List<MediaModel>>> get() = _imageFilesLiveData
+
+    private val _documentsFilesLiveData =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+    val documentsFilesLiveData: StateFlow<FilesResult<List<File>>> get() = _documentsFilesLiveData
+
+    private val _videosFilesLiveData =
+        MutableStateFlow<FilesResult<List<MediaModel>>>(FilesResult.Loading())
+    val videosFilesLiveData: StateFlow<FilesResult<List<MediaModel>>> get() = _videosFilesLiveData
+
+    private val _audiosFilesLiveData =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+    val audiosFilesLiveData: StateFlow<FilesResult<List<File>>> get() = _audiosFilesLiveData
+
+    private val _zipsFilesLiveData =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+    val zipsFilesLiveData: StateFlow<FilesResult<List<File>>> get() = _zipsFilesLiveData
+
+    private val _appsFilesLiveData =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+    val appsFilesLiveData: StateFlow<FilesResult<List<File>>> get() = _appsFilesLiveData
+
+    private val _allFilesOfDirectoryOfSpecificType =
+        MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+    val allFilesOfDirectoryOfSpecificType: StateFlow<FilesResult<List<File>>> get() = _allFilesOfDirectoryOfSpecificType
+
 
     suspend fun getImageFilesList() {
-        _imageFilesLiveData.postValue(FilesResult.Loading())
+        _imageFilesLiveData.value = (FilesResult.Loading())
         try {
             runBlocking {
                 // Launching two calculations concurrently on IO dispatcher
@@ -79,26 +72,37 @@ class FilesListRepository @Inject constructor(
                     val internalListDef = async {
                         getImagesFoldersList(
                             Environment.getExternalStorageDirectory(),
-                            Constants.VIDEO
+                            Constants.PICTURES
                         )
                     }
                     val sdListDef = async {
-                        getImagesFoldersList(sdCardFile.value, Constants.VIDEO)
+                        getImagesFoldersList(sdCardFile.value, Constants.PICTURES)
                     }
                     val internalList = internalListDef.await()
                     val sdList = sdListDef.await()
                     internalList.addAll(sdList)
-                    _imageFilesLiveData.postValue(FilesResult.Success(internalList))
+                    _imageFilesLiveData.value = (FilesResult.Success(internalList))
                 }
             }
 
         } catch (e: Exception) {
-            _imageFilesLiveData.postValue(FilesResult.Error("Something Went Wrong"))
+            _imageFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+    suspend fun getAudiosFilesList() {
+        _audiosFilesLiveData.value = (FilesResult.Loading())
+        try {
+            val fileArrayList =
+                getAllFilesOnBasisOfType(Environment.getExternalStorageDirectory(), Constants.AUDIO)
+            _audiosFilesLiveData.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _audiosFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
         }
     }
 
     suspend fun getVideosFilesList() {
-        _videosFilesLiveData.postValue(FilesResult.Loading())
+        _videosFilesLiveData.value = (FilesResult.Loading())
         try {
             runBlocking {
                 // Launching two calculations concurrently on IO dispatcher
@@ -115,26 +119,73 @@ class FilesListRepository @Inject constructor(
                     val internalList = internalListDef.await()
                     val sdList = sdListDef.await()
                     internalList.addAll(sdList)
-                    _videosFilesLiveData.postValue(FilesResult.Success(internalList))
+                    _videosFilesLiveData.value = (FilesResult.Success(internalList))
                 }
             }
 
         } catch (e: Exception) {
-            _videosFilesLiveData.postValue(FilesResult.Error("Something Went Wrong"))
+            _videosFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+    suspend fun getZipsFilesList() {
+        _zipsFilesLiveData.value = (FilesResult.Loading())
+        try {
+            val fileArrayList =
+                getAllFilesOnBasisOfType(Environment.getExternalStorageDirectory(), Constants.ZIP)
+            _zipsFilesLiveData.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _zipsFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+    suspend fun getAppsFilesList() {
+        _appsFilesLiveData.value = (FilesResult.Loading())
+        try {
+            val fileArrayList =
+                getAllFilesOnBasisOfType(Environment.getExternalStorageDirectory(), Constants.APP)
+            _appsFilesLiveData.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _appsFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
         }
     }
 
     suspend fun getDocumentsFilesList() {
-        _documentsFilesLiveData.postValue(FilesResult.Loading())
+        _documentsFilesLiveData.value = (FilesResult.Loading())
         try {
-            val fileArrayList = getDownloadsFilesPath(
+            val fileArrayList = getAllFilesOnBasisOfType(
+                Environment.getExternalStorageDirectory(),
+                Constants.DOCUMENT
+            )
+            _documentsFilesLiveData.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _documentsFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+    suspend fun getDownLoadsFilesList() {
+        _downloadFilesLiveData.value = (FilesResult.Loading())
+        try {
+            val fileArrayList = getAllFilesOnBasisOfType(
                 Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS
-                )
+                ), Constants.ALL_TYPES_FILE
             )
-            _documentsFilesLiveData.postValue(FilesResult.Success(fileArrayList))
+            _downloadFilesLiveData.value = (FilesResult.Success(fileArrayList))
         } catch (e: Exception) {
-            _documentsFilesLiveData.postValue(FilesResult.Error("Something Went Wrong"))
+            _downloadFilesLiveData.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+
+    suspend fun getAllFilesOfDirectoryOfSpecificType(file: File, fileType: String) {
+        _allFilesOfDirectoryOfSpecificType.value = (FilesResult.Loading())
+        try {
+            val fileArrayList =
+                getAllFilesOnBasisOfType(file, fileType)
+            _allFilesOfDirectoryOfSpecificType.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _allFilesOfDirectoryOfSpecificType.value = (FilesResult.Error("Something Went Wrong"))
         }
     }
 
@@ -147,10 +198,9 @@ class FilesListRepository @Inject constructor(
                 if (file1.isDirectory && !file1.isHidden && file1.name != "Telegram") {
                     val directory = isDirectory(file1, fileType)
                     if (directory != null) {
-                        val anInt = getInt(directory, fileType)
-                        //                        if (anInt>1){
-                        fileArrayList.add(MediaModel(directory, anInt))
-                        //                        }
+                        val listOfFiles = getAllFilesOnBasisOfType(directory, fileType)
+                        val firstFileOfDirectory = getFirstFileOfDirectory(directory, fileType)
+                        fileArrayList.add(MediaModel(directory, firstFileOfDirectory, listOfFiles.size))
                     }
                 }
             }
@@ -169,9 +219,19 @@ class FilesListRepository @Inject constructor(
         return count
     }
 
+    private fun getFirstFileOfDirectory(file: File, fileType: String): File {
+        val files = file.listFiles()
+        for (file1 in files) {
+            if (fileHelper.getFileType(file1).equals(fileType)) {
+                return file1
+            }
+        }
+        return file
+    }
+
+
     private fun isDirectory(file: File, fileType: String): File? {
         val files = file.listFiles()
-
         if (files != null) {
             for (file1 in files) {
                 if (file1.isDirectory && !file1.isHidden) {
@@ -205,6 +265,27 @@ class FilesListRepository @Inject constructor(
             }
         }
         return null
+    }
+
+    private fun getAllFilesOnBasisOfType(file: File, fileType: String): ArrayList<File> {
+        val fileArrayList = ArrayList<File>()
+        val files = file.listFiles()
+        if (files != null) {
+            for (singleFile in files) {
+                if (singleFile.isDirectory && !singleFile.isHidden && singleFile.name != "Telegram") {
+                    fileArrayList.addAll(getAllFilesOnBasisOfType(singleFile, fileType))
+                } else {
+                    if (!singleFile.isHidden && fileType.equals(Constants.ALL_TYPES_FILE)) {
+                        fileArrayList.add(singleFile)
+                    } else if (!singleFile.isHidden && fileHelper.getFileType(singleFile)
+                            .equals(fileType)
+                    ) {
+                        fileArrayList.add(singleFile)
+                    }
+                }
+            }
+        }
+        return fileArrayList
     }
 
 

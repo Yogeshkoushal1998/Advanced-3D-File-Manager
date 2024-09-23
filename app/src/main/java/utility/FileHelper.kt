@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
@@ -29,125 +30,131 @@ class FileHelper @Inject constructor(@ApplicationContext val mContext: Context) 
             }
 
             if (filePath.lowercase(Locale.getDefault())
-                    .contains(".jpg") || filePath.lowercase(Locale.getDefault())
-                    .contains(".jpeg") || filePath.lowercase(Locale.getDefault()).contains(".png")
+                    .endsWith(".jpg") || filePath.lowercase(Locale.getDefault())
+                    .endsWith(".jpeg") || filePath.lowercase(Locale.getDefault())
+                    .endsWith(".png") || filePath.lowercase(Locale.getDefault())
+                    .endsWith(".heic") || filePath.lowercase(Locale.getDefault()).endsWith(".webp")
             ) {
                 intent.setDataAndType(contentUri, "image/*")
-            } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".xls") || filePath.lowercase(
+            } else if(filePath.lowercase(Locale.getDefault())
+                    .endsWith(".apk")) {
+                intent.setDataAndType(contentUri, "application/vnd.android.package-archive")
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // Grant permission to read the URI
+            }else if (filePath.lowercase(Locale.getDefault())
+                    .endsWith(".xls") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".xlsx")
-                || filePath.lowercase(Locale.getDefault()).contains(".csv")
+                ).endsWith(".xlsx")
+                || filePath.lowercase(Locale.getDefault()).endsWith(".csv")
             ) {
                 intent.setDataAndType(contentUri, "application/vnd.ms-excel")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".pdf")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".pdf")) {
                 intent.setDataAndType(contentUri, "application/pdf")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".doc") || filePath.lowercase(
+                    .endsWith(".doc") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".docx")
+                ).endsWith(".docx")
             ) {
                 intent.setDataAndType(contentUri, "application/msword")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".ppt") || filePath.lowercase(
+                    .endsWith(".ppt") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".pptx")
+                ).endsWith(".pptx")
             ) {
                 intent.setDataAndType(contentUri, "application/vnd.ms-powerpoint")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".zip") || filePath.lowercase(
+                    .endsWith(".zip") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".rar")
+                ).endsWith(".rar")
             ) {
                 // WAV audio file
                 intent.setDataAndType(contentUri, "application/x-wav")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".rtf")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".rtf")) {
                 // RTF file
                 intent.setDataAndType(contentUri, "application/rtf")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".wav") || filePath.lowercase(
+                    .endsWith(".wav") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".mp3")
+                ).endsWith(".mp3")
             ) {
                 // WAV audio file
                 intent.setDataAndType(contentUri, "audio/x-wav")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".gif")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".gif")) {
                 // GIF file
                 intent.setDataAndType(contentUri, "image/gif")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".txt")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".txt")) {
                 intent.setDataAndType(contentUri, "text/plain")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".xml")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".xml")) {
                 intent.setDataAndType(contentUri, "text/xml")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".xlsm") || filePath.lowercase(
+                    .endsWith(".xlsm") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".xlsb")
+                ).endsWith(".xlsb")
             ) {
                 intent.setDataAndType(contentUri, "application/vnd.ms-excel")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".msg")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".msg")) {
                 intent.setDataAndType(contentUri, "application/vnd.ms-outlook")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".3gp") || filePath.lowercase(
+                    .endsWith(".3gp") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".mpg")
-                || filePath.lowercase(Locale.getDefault()).contains(".mpeg") || filePath.lowercase(
+                ).endsWith(".mpg")
+                || filePath.lowercase(Locale.getDefault()).endsWith(".mpeg") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".mpe")
-                || filePath.lowercase(Locale.getDefault()).contains(".mp4") || filePath.lowercase(
+                ).endsWith(".mpe")
+                || filePath.lowercase(Locale.getDefault()).endsWith(".mp4") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".avi")
-                || filePath.lowercase(Locale.getDefault()).contains(".mov") || filePath.lowercase(
+                ).endsWith(".avi")
+                || filePath.lowercase(Locale.getDefault()).endsWith(".mov") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".ogg")
+                ).endsWith(".ogg")
                 || isVideoFile(filePath)
             ) {
                 intent.setDataAndType(contentUri, "video/*")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".VSDX") || filePath.lowercase(
+                    .endsWith(".VSDX") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".vsdx")
+                ).endsWith(".vsdx")
             ) {
                 intent.setDataAndType(contentUri, "application/x-visio")
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".dwt") || filePath.lowercase(
+                    .endsWith(".dwt") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".dwg")
+                ).endsWith(".dwg")
             ) {
                 intent.setDataAndType(contentUri, "application/acad")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".dxf")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".dxf")) {
                 intent.setDataAndType(contentUri, "application/dxf")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".lzh")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".lzh")) {
                 intent.setDataAndType(contentUri, "application/octet-stream")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".pptm")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".pptm")) {
                 intent.setDataAndType(
                     contentUri,
                     "application/vnd.ms-powerpoint.presentation.macroEnabled.12"
                 )
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".bmp")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".bmp")) {
                 // bmp file
                 intent.setDataAndType(contentUri, "image/bmp")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".Dgn")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".Dgn")) {
                 // Dgn file
                 intent.setDataAndType(contentUri, "image/vnd.dgn")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".stl")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".stl")) {
                 // stl file,application/vnd.ms-pki.stl,application/x-navistyle
                 intent.setDataAndType(contentUri, "application/sla")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".dwx")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".dwx")) {
                 // dwx file
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".docm")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".docm")) {
                 // docm file
                 intent.setDataAndType(
                     contentUri,
                     "application/vnd.ms-word.document.macroEnabled.12"
                 )
             } else if (filePath.lowercase(Locale.getDefault())
-                    .contains(".tif") || filePath.lowercase(
+                    .endsWith(".tif") || filePath.lowercase(
                     Locale.getDefault()
-                ).contains(".tiff")
+                ).endsWith(".tiff")
             ) {
                 // tif file,image/x-tiffm
                 intent.setDataAndType(contentUri, "image/tiff")
-            } else if (filePath.lowercase(Locale.getDefault()).contains(".psd")) {
+            } else if (filePath.lowercase(Locale.getDefault()).endsWith(".psd")) {
                 // psd file
                 intent.setDataAndType(contentUri, "application/octet-stream")
             } else {
@@ -193,86 +200,104 @@ class FileHelper @Inject constructor(@ApplicationContext val mContext: Context) 
 
     fun getFileType(file: File): String {
         val filePath = file.path
-        if(file.isDirectory){
+        if (file.isDirectory) {
             return Constants.DIRECTORY
-        }else{
+        } else {
             try {
                 if (filePath.lowercase(Locale.getDefault())
-                        .contains(".jpg") || filePath.lowercase(Locale.getDefault())
-                        .contains(".jpeg") || filePath.lowercase(Locale.getDefault())
-                        .contains(".png") || filePath.lowercase(Locale.getDefault())
-                        .contains(".Dgn") || filePath.lowercase(Locale.getDefault()).contains(".bmp")
+                        .endsWith(".jpg") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".jpeg") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".png") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".Dgn") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".bmp") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".heic") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".webp")
+
                 ) {
-                    return Constants.IMAGE
+                    return Constants.PICTURES
                 } else if (filePath.lowercase(Locale.getDefault())
-                        .contains(".xls") || filePath.lowercase(
+                        .endsWith(".xls") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".xlsx")
-                    || filePath.lowercase(Locale.getDefault()).contains(".csv") || filePath.lowercase(
+                    ).endsWith(".xlsx")
+                    || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".csv") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".pdf") || filePath.lowercase(Locale.getDefault())
-                        .contains(".doc") || filePath.lowercase(
+                    ).endsWith(".pdf") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".doc") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".docx") || filePath.lowercase(Locale.getDefault())
-                        .contains(".VSDX") || filePath.lowercase(
+                    ).endsWith(".docx") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".VSDX") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".vsdx") || filePath.lowercase(Locale.getDefault())
-                        .contains(".dwt") || filePath.lowercase(
+                    ).endsWith(".vsdx") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".dwt") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".dwg") || filePath.lowercase(Locale.getDefault())
-                        .contains(".dxf") || filePath.lowercase(Locale.getDefault())
-                        .contains(".lzh") || filePath.lowercase(Locale.getDefault())
-                        .contains(".pptm") || filePath.lowercase(Locale.getDefault())
-                        .contains(".stl") || filePath.lowercase(Locale.getDefault())
-                        .contains(".dwx") || filePath.lowercase(Locale.getDefault())
-                        .contains(".docm") || filePath.lowercase(Locale.getDefault())
-                        .contains(".tif") || filePath.lowercase(
+                    ).endsWith(".dwg") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".dxf") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".lzh") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".pptm") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".stl") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".dwx") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".docm") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".tif") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".tiff") || filePath.lowercase(Locale.getDefault())
-                        .contains(".psd") || filePath.lowercase(Locale.getDefault())
-                        .contains(".txt") || filePath.lowercase(Locale.getDefault())
-                        .contains(".xml") || filePath.lowercase(Locale.getDefault())
-                        .contains(".xlsm") || filePath.lowercase(
+                    ).endsWith(".tiff") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".psd") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".txt") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".xml") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".xlsm") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".xlsb") || filePath.lowercase(Locale.getDefault())
-                        .contains(".msg") || filePath.lowercase(Locale.getDefault())
-                        .contains(".ppt") || filePath.lowercase(
+                    ).endsWith(".xlsb") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".msg") || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".ppt") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".pptx") || filePath.lowercase(Locale.getDefault()).contains(".rtf")
+                    ).endsWith(".pptx") || filePath.lowercase(Locale.getDefault()).endsWith(".rtf")
                 ) {
                     return Constants.DOCUMENT
                 } else if (filePath.lowercase(Locale.getDefault())
-                        .contains(".zip") || filePath.lowercase(
+                        .endsWith(".zip") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".rar")
+                    ).endsWith(".rar") || filePath.lowercase(
+                        Locale.getDefault()
+                    ).endsWith(".jar")
                 ) {
                     // WAV audio file
                     return Constants.ZIP
                 } else if (filePath.lowercase(Locale.getDefault())
-                        .contains(".wav") || filePath.lowercase(
+                        .endsWith(".wav") ||
+                    filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".mp3")
+                    ).endsWith(".mp3")
+                    ||filePath.lowercase(
+                        Locale.getDefault()
+                    ).endsWith(".aac")
                 ) {
                     // WAV audio file
                     return Constants.AUDIO
                 } else if (filePath.lowercase(Locale.getDefault())
-                        .contains(".3gp") || filePath.lowercase(
+                        .endsWith(".3gp") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".mpg")
-                    || filePath.lowercase(Locale.getDefault()).contains(".mpeg") || filePath.lowercase(
+                    ).endsWith(".mpg")
+                    || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".mpeg") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".mpe")
-                    || filePath.lowercase(Locale.getDefault()).contains(".mp4") || filePath.lowercase(
+                    ).endsWith(".mpe")
+                    || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".mp4") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".avi")
-                    || filePath.lowercase(Locale.getDefault()).contains(".mov") || filePath.lowercase(
+                    ).endsWith(".avi")
+                    || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".mov") || filePath.lowercase(
                         Locale.getDefault()
-                    ).contains(".ogg")
-                    || isVideoFile(filePath)||filePath.lowercase(Locale.getDefault()).contains(".gif")
+                    ).endsWith(".ogg")
+                    || isVideoFile(filePath) || filePath.lowercase(Locale.getDefault())
+                        .endsWith(".gif")
                 ) {
                     return Constants.VIDEO
+                } else if(filePath.lowercase(Locale.getDefault())
+                        .endsWith(".apk")) {
+                    return Constants.APP
                 } else {
-                    return Constants.DOCUMENT
+                    return Constants.UNIDENTIFIED
                 }
             } catch (e: ActivityNotFoundException) {
                 //show toast
@@ -281,9 +306,6 @@ class FileHelper @Inject constructor(@ApplicationContext val mContext: Context) 
                 Log.d("Exception::", "Exception found")
             }
         }
-
-
         return ""
     }
-
 }

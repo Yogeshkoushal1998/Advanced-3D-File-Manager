@@ -62,10 +62,11 @@
                     style="@style/neuCardStyle"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
-                    android:padding="@dimen/_18sdp"
+                    android:padding="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_12sdp"
                     app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
                     app:neumorph_shapeType="flat"
-                    app:srcCompat="@drawable/ic_menu" />
+                    app:srcCompat="@drawable/ic_back" />
 
 
                 <soup.neumorphism.NeumorphImageView
@@ -75,7 +76,7 @@
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     android:layout_alignParentEnd="true"
-                    android:layout_toStartOf="@+id/btnOptionMenu"
+                    android:layout_toStartOf="@+id/btnGridViewListView"
                     android:padding="@dimen/_18sdp"
                     app:actionViewClass="androidx.appcompat.widget.SearchView"
                     app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
@@ -84,16 +85,15 @@
 
 
                 <soup.neumorphism.NeumorphImageView
-                    android:id="@+id/btnOptionMenu"
+                    android:id="@+id/btnGridViewListView"
                     style="@style/neuCardStyle"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
                     android:layout_alignParentEnd="true"
-                    android:padding="@dimen/_18sdp"
-                    android:visibility="gone"
+                    android:padding="@dimen/_15sdp"
                     app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
                     app:neumorph_shapeType="flat"
-                    app:srcCompat="@drawable/ic_neumorph_filter" />
+                    app:srcCompat="@drawable/ic_list_view" />
 
 
                 <soup.neumorphism.NeumorphCardView

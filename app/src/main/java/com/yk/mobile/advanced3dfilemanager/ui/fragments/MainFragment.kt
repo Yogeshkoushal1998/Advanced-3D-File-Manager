@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Environment
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +22,6 @@ import com.yk.mobile.advanced3dfilemanager.R
 import com.yk.mobile.advanced3dfilemanager.databinding.FragmentMainBinding
 import com.yk.mobile.advanced3dfilemanager.viewmodel.FileSizeViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import soup.neumorphism.NeumorphButton
@@ -50,32 +50,58 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.nvInternal.setOnClickListener({
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.GENERAL )
+                putString(Constants.DIRECTORY_PATH, Environment.getExternalStorageDirectory().path)
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
+        })
         binding.llImages.setOnClickListener({
-            it.findNavController().navigate(R.id.action_mainFragment_to_imagesFragments)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.PICTURES )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_imagesFragments,bundle)
         })
         binding.llAudio.setOnClickListener({
-            it.findNavController().navigate(R.id.action_mainFragment_to_audioFragment)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.AUDIO )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
         })
         binding.llVideo.setOnClickListener({
-            it.findNavController().navigate(R.id.action_mainFragment_to_videosFragment)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.VIDEO )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_imagesFragments,bundle)
         })
         binding.llZip.setOnClickListener({
-            it.findNavController().navigate(R.id.action_mainFragment_to_zipFragment)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.ZIP )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
         })
         binding.llApps.setOnClickListener({
-            it.findNavController().navigate(R.id.action_mainFragment_to_appsFragment)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.APP )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
+
         })
         binding.llDocuments.setOnClickListener({
-            it.findNavController().navigate(R.id.documentsFragment)
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE,Constants.DOCUMENT )
+            }
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
+
         })
         binding.llDownloads.setOnClickListener({
             // Create a Bundle to pass data
             val bundle = Bundle().apply {
-                putString(Constants.REDIRECTION_TYPE,Constants.AUDIO )
+                putString(Constants.REDIRECTION_TYPE,Constants.DOWNLOADS )
             }
 
-            it.findNavController().navigate(R.id.action_mainFragment_to_downloadsFragment,bundle)
+            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
         })
 
 

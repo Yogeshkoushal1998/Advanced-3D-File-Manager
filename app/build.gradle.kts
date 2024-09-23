@@ -69,4 +69,8 @@ dependencies {
     implementation(libs.glide)
     kapt(libs.glide.compiler)
 
+    implementation("androidx.preference:preference:1.1.1")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
+
+
 }

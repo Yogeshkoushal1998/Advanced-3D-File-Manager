@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/lLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -40,14 +40,26 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:overScrollMode="never"
+                android:paddingStart="@dimen/_4sdp"
+                android:paddingTop="@dimen/_12sdp"
+                android:paddingEnd="@dimen/_4sdp"
                 android:paddingBottom="@dimen/_10sdp"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbarThumbVertical="@drawable/scroll_bar_view"
+                android:scrollbars="vertical"
                 android:visibility="visible"
-                tools:listitem="@layout/all_type_file_item" />
-        </LinearLayout>
+                tools:listitem="@layout/all_type_file__list_item" />
+
+            <View
+                android:id="@+id/customScrollbar"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:background="@color/transparent" />
+        </RelativeLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 
