@@ -4,5 +4,6 @@ import java.io.File
 
 data class MediaModel(
     val file: File,
-    val firstFileOfDirectory: File,
-    val count :Int)
+    val firstFileOfDirectory: File?,
+    val count: Int
+)

@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import utility.Constants
 import utility.FileHelper
 import utility.FilesResult
+import utility.OnBackPressedListener
 import utility.SecuredPreferenceHelper
 import utility.Utils
 import java.io.File
@@ -30,7 +32,7 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class AllListFragment : Fragment() {
+class AllListFragment : Fragment(), OnBackPressedListener {
 
     @Inject
     lateinit var fileHelper: FileHelper
@@ -53,6 +55,8 @@ class AllListFragment : Fragment() {
 
     private lateinit var adapter: AllFilesListAdapter
 
+    private var isSearchEnable = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +71,13 @@ class AllListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAllListBinding.inflate(inflater, container, false)
-        adapter = AllFilesListAdapter(::onFileItemClicked, utils, fileHelper, requireActivity())
+        adapter = AllFilesListAdapter(
+            ::onFileItemClicked,
+            ::onSearchEnableGetCounts,
+            utils,
+            fileHelper,
+            requireActivity()
+        )
         return binding.root
     }
 
@@ -78,16 +88,32 @@ class AllListFragment : Fragment() {
                 putString(Constants.DIRECTORY_PATH, file.path)
             }
             findNavController().navigate(R.id.action_allFragments_self, bundle)
-
         } else {
             fileHelper.openFile(file.path)
         }
     }
 
+    private fun onSearchEnableGetCounts(listSize: Int) {
+        binding.noDataAvailable.root.isVisible = listSize == 0
+        val title = redirectionType.let {
+            var titleSuffix =
+                if (redirectionType.equals(Constants.GENERAL) || redirectionType.equals(Constants.PICTURES) || redirectionType.equals(
+                        Constants.VIDEO
+                    )
+                ) {
+                    File(directoryPath).name
+                } else {
+                    it
+                }
+            titleSuffix.plus(" (${listSize})")
+        }
+        binding.include.collapsingToolbar.title = title
+        binding.include.toolbar.title = title
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        setSwipeOnRecyclerBarView()
         bindObservers()
         setToolbar()
         setListTypeInToolbar(
@@ -97,6 +123,7 @@ class AllListFragment : Fragment() {
             )
         )
         setClickListener()
+        setSearchView()
         binding.rvList.setHasFixedSize(true)
         binding.rvList.setItemViewCacheSize(20)
         binding.rvList.adapter = adapter
@@ -141,19 +168,51 @@ class AllListFragment : Fragment() {
                     }
                 }
 
-                Constants.GENERAL -> {
-                    directoryPath.let {
-                        downloadViewModel.getAllFilesOfDirectoryOfSpecificType(
-                            File(it),
-                            Constants.ALL_TYPES_FILE
-                        )
-                    }
-                }
             }
 
         }
 
     }
+
+    private fun setSearchView() {
+        binding.include.btnSearch.setOnClickListener({
+            showSearchView(true)
+        })
+
+        binding.include.commonSearchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                adapter.getFilter().filter(newText)
+                return false
+            }
+        })
+
+
+
+        binding.include.ivCrossSearchView.setOnClickListener({
+            if (binding.include.commonSearchView.query!!.isEmpty()) {
+                showSearchView(false)
+            } else {
+                binding.include.commonSearchView.setQuery("", false)
+            }
+        })
+    }
+
+
+    fun showSearchView(isShow: Boolean) {
+        isSearchEnable=isShow
+        binding.include.btnBack.isVisible = !isShow
+        binding.include.btnSearch.isVisible = !isShow
+        binding.include.btnGridViewListView.isVisible = !isShow
+        binding.include.neumorphSearchView.isVisible = isShow
+        binding.include.commonSearchView.requestFocus()
+    }
+
 
     private fun setRecyclerView() {
         val booleanSecuredPreference =
@@ -189,7 +248,7 @@ class AllListFragment : Fragment() {
 
     private fun setClickListener() {
         binding.include.btnBack.setOnClickListener({
-            it.findNavController().popBackStack()
+            onBackPressed()
         })
         binding.include.btnGridViewListView.setOnClickListener({
             val booleanSecuredPreference =
@@ -248,10 +307,6 @@ class AllListFragment : Fragment() {
                     setDownloadsObserver()
                 }
 
-                Constants.GENERAL -> {
-                    setGeneralObserver()
-                }
-
                 Constants.VIDEO -> {
                     setGeneralObserver()
                 }
@@ -265,6 +320,7 @@ class AllListFragment : Fragment() {
 
 
     }
+
 
     private fun setGeneralObserver() {
         lifecycleScope.launch {
@@ -327,7 +383,11 @@ class AllListFragment : Fragment() {
         when (it) {
             is FilesResult.Success -> {
                 updateToolBarTitles(it)
-                adapter.updateFiles(it.data!!)
+                it.let {
+                    val empty = it.data!!.isEmpty()
+                    adapter.updateFiles(it.data!!)
+                    binding.noDataAvailable.root.isVisible = empty
+                }
             }
 
             is FilesResult.Error -> {
@@ -385,12 +445,22 @@ class AllListFragment : Fragment() {
             Gravity.CENTER_HORIZONTAL
         binding.include.collapsingToolbar.setExpandedTitleTextAppearance(R.style.expandedAppBar)
         binding.include.collapsingToolbar.setCollapsedTitleTextAppearance(R.style.collapsedAppBar)
-        binding.include.etSearchView.hint = getString(R.string.search)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+    override fun onBackPressed(): Boolean {
+        // Return true if back press is handled in the fragment
+        return if (shouldHandleCustomBackPress()) {
+            binding.include.ivCrossSearchView.performClick()
+            true
+        } else {
+            // Let the activity handle it
+            findNavController().popBackStack()
+        }
+    }
+
+    private fun shouldHandleCustomBackPress(): Boolean {
+        // Your custom conditions here
+        return isSearchEnable
     }
 
 }

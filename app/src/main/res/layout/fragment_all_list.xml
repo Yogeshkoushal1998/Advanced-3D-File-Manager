@@ -37,6 +37,13 @@
             app:layout_constraintStart_toStartOf="parent">
 
 
+            <include
+                android:id="@+id/no_data_available"
+                layout="@layout/no_data_available"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvList"
                 android:layout_width="match_parent"
@@ -50,7 +57,6 @@
                 android:scrollbarStyle="insideOverlay"
                 android:scrollbarThumbVertical="@drawable/scroll_bar_view"
                 android:scrollbars="vertical"
-                android:visibility="visible"
                 tools:listitem="@layout/all_type_file__list_item" />
 
             <View
@@ -60,6 +66,8 @@
                 android:layout_alignParentEnd="true"
                 android:background="@color/transparent" />
         </RelativeLayout>
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
 

@@ -32,6 +32,8 @@ class FilesListViewModel @Inject constructor(private val filesListRepository: Fi
 
     val allFilesOfDirectoryOfSpecificType: StateFlow<FilesResult<List<File>>> get() = filesListRepository.allFilesOfDirectoryOfSpecificType
 
+    val allFilesOfDirectory: StateFlow<FilesResult<List<MediaModel>>> get() = filesListRepository.allFilesOfDirectory
+
 
     fun getImageFilesList() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -79,6 +81,12 @@ class FilesListViewModel @Inject constructor(private val filesListRepository: Fi
     fun getAllFilesOfDirectoryOfSpecificType(file: File, fileType: String) {
         viewModelScope.launch(Dispatchers.IO) {
             filesListRepository.getAllFilesOfDirectoryOfSpecificType(file, fileType)
+        }
+    }
+
+    fun getAllFilesOfDirectory(file: File) {
+        viewModelScope.launch(Dispatchers.IO) {
+            filesListRepository.getAllFilesOfDirectory(file)
         }
     }
 

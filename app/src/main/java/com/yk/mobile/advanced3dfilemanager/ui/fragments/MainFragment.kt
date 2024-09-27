@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
                 putString(Constants.REDIRECTION_TYPE,Constants.GENERAL )
                 putString(Constants.DIRECTORY_PATH, Environment.getExternalStorageDirectory().path)
             }
-            it.findNavController().navigate(R.id.action_mainFragment_to_allFragments,bundle)
+            it.findNavController().navigate(R.id.action_mainFragment_to_imagesFragments,bundle)
         })
         binding.llImages.setOnClickListener({
             val bundle = Bundle().apply {

@@ -2,6 +2,7 @@ package com.yk.mobile.advanced3dfilemanager.repository
 
 import android.content.Context
 import android.os.Environment
+import android.provider.MediaStore
 import com.yk.mobile.advanced3dfilemanager.model.MediaModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import utility.AppLogger
 import utility.Constants
 import utility.FileHelper
 import utility.FilesResult
@@ -60,7 +62,12 @@ class FilesListRepository @Inject constructor(
 
     private val _allFilesOfDirectoryOfSpecificType =
         MutableStateFlow<FilesResult<List<File>>>(FilesResult.Loading())
+
     val allFilesOfDirectoryOfSpecificType: StateFlow<FilesResult<List<File>>> get() = _allFilesOfDirectoryOfSpecificType
+
+    private val _allFilesOfDirectory =
+        MutableStateFlow<FilesResult<List<MediaModel>>>(FilesResult.Loading())
+    val allFilesOfDirectory: StateFlow<FilesResult<List<MediaModel>>> get() = _allFilesOfDirectory
 
 
     suspend fun getImageFilesList() {
@@ -163,6 +170,65 @@ class FilesListRepository @Inject constructor(
         }
     }
 
+    private fun listWhatsAppMediaFilesByDirectory(file:File): Map<String, List<File>> {
+        val projection = arrayOf(
+/*
+            MediaStore.Images.Media._ID,
+            MediaStore.Images.Media.DISPLAY_NAME,
+            MediaStore.Images.Media.DATA,
+*/
+                    MediaStore.Files.FileColumns._ID,
+            MediaStore.Files.FileColumns.DISPLAY_NAME,
+            MediaStore.Files.FileColumns.DATA
+        )
+
+
+        // Selection to filter WhatsApp media files, including hidden ones
+        val selection = MediaStore.Files.FileColumns.DATA + " LIKE ?"
+        val selectionArgs = arrayOf("%${file.path}%")
+
+        val cursor = context.contentResolver.query(
+            MediaStore.Files.getContentUri("external"),
+            projection,
+            selection,
+            selectionArgs,
+            null
+        )
+
+        // Map to group files by their directories
+        val mediaFilesByDirectory = mutableMapOf<String, MutableList<File>>()
+
+        cursor?.use {
+            val dataColumn = it.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
+
+            while (it.moveToNext()) {
+                val data = it.getString(dataColumn)  // File path
+
+                // Create File object
+                val file = File(data)
+
+                // Get parent directory
+                val parentDirectory = file.parentFile?.absolutePath ?: "Unknown Directory"
+
+                // Add file to its directory group
+                mediaFilesByDirectory.computeIfAbsent(parentDirectory) { mutableListOf() }.add(file)
+            }
+        }
+
+        // Log for debugging
+        mediaFilesByDirectory.forEach { (directory, files) ->
+            AppLogger.d("WhatsAppMedia", "Directory: $directory")
+            files.forEach { file ->
+                AppLogger.d("WhatsAppMedia", "  File: ${file.name}, Path: ${file.absolutePath}, Hidden: ${file.isHidden}")
+            }
+        }
+
+        return mediaFilesByDirectory
+    }
+
+
+
+
     suspend fun getDownLoadsFilesList() {
         _downloadFilesLiveData.value = (FilesResult.Loading())
         try {
@@ -189,6 +255,40 @@ class FilesListRepository @Inject constructor(
         }
     }
 
+    suspend fun getAllFilesOfDirectory(file: File) {
+        _allFilesOfDirectory.value = (FilesResult.Loading())
+        try {
+            val fileArrayList =
+                getAllFilesOfTypeDirectory(file)
+            _allFilesOfDirectory.value = (FilesResult.Success(fileArrayList))
+        } catch (e: Exception) {
+            _allFilesOfDirectory.value = (FilesResult.Error("Something Went Wrong"))
+        }
+    }
+
+    private fun getAllFilesOfTypeDirectory(file: File): List<MediaModel> {
+        val fileArrayList = ArrayList<MediaModel>()
+       /* val fileMap = listWhatsAppMediaFilesByDirectory(file)
+        for (map in fileMap){
+            AppLogger.d(TAG , "Directory Path${map.key}")
+        }
+        for (map in fileMap){
+            fileArrayList.add(MediaModel(File(map.key), null, map.value.size))
+        }*/
+        val files = file.listFiles()
+        if (files != null) {
+            for (singleFile in files) {
+                if (!singleFile.isHidden) {
+                    if (!singleFile.isDirectory) {
+                        fileArrayList.add(MediaModel(singleFile, singleFile,0))
+                    } else {
+                        fileArrayList.add(MediaModel(singleFile, null, getIntCount(singleFile)))
+                    }
+                }
+            }
+        }
+        return fileArrayList
+    }
 
     private fun getImagesFoldersList(file: File, fileType: String): ArrayList<MediaModel> {
         val fileArrayList = ArrayList<MediaModel>()
@@ -200,7 +300,13 @@ class FilesListRepository @Inject constructor(
                     if (directory != null) {
                         val listOfFiles = getAllFilesOnBasisOfType(directory, fileType)
                         val firstFileOfDirectory = getFirstFileOfDirectory(directory, fileType)
-                        fileArrayList.add(MediaModel(directory, firstFileOfDirectory, listOfFiles.size))
+                        fileArrayList.add(
+                            MediaModel(
+                                directory,
+                                firstFileOfDirectory,
+                                listOfFiles.size
+                            )
+                        )
                     }
                 }
             }
@@ -208,12 +314,14 @@ class FilesListRepository @Inject constructor(
         return fileArrayList
     }
 
-    private fun getInt(file: File, fileType: String): Int {
+    private fun getIntCount(file: File): Int {
         var count = 0
         val files = file.listFiles()
-        for (file1 in files) {
-            if (fileHelper.getFileType(file1).equals(fileType)) {
-                count += 1
+        if (files != null) {
+            for (singleFile in files) {
+                if (!singleFile.isHidden) {
+                    count += 1
+                }
             }
         }
         return count
@@ -228,7 +336,6 @@ class FilesListRepository @Inject constructor(
         }
         return file
     }
-
 
     private fun isDirectory(file: File, fileType: String): File? {
         val files = file.listFiles()

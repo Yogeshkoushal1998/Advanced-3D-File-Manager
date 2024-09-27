@@ -20,6 +20,8 @@ kotlinx-coroutines = "1.6.0"
 androidx-lifecycle = "2.6.0"
 mp_android_chart_version = "v3.1.0"
 glide = "4.15.1"
+preference = "1.1.1"
+security_crypto = "1.1.0-alpha03"
 
 
 [libraries]
@@ -46,7 +48,8 @@ android-spinkit = { group = "com.github.ybq", name = "Android-SpinKit", version.
 mp-android-chart = { group = "com.github.PhilJay", name = "MPAndroidChart", version.ref = "mp_android_chart_version" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
-
+preference = { group = "androidx.preference", name = "preference", version.ref = "preference" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "security_crypto" }
 
 
 [plugins]

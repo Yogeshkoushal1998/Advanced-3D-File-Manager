@@ -5,6 +5,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -26,6 +27,7 @@ import utility.FilesResult
 import utility.OnBackPressedListener
 import utility.SecuredPreferenceHelper
 import utility.Utils
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,16 +47,19 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
     private var _binding: FragmentAllListBinding? = null
 
     private val binding get() = _binding!!
-
+    private var directoryPath: String? = null
     private val downloadViewModel: FilesListViewModel by viewModels()
 
     private lateinit var imageVideoFilesListAdapter: ImageVideoFilesListAdapter
+
+    private var isSearchEnable = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val args = arguments
         redirectionType = args?.getString(Constants.REDIRECTION_TYPE)
+        directoryPath = args?.getString(Constants.DIRECTORY_PATH)
     }
 
     override fun onCreateView(
@@ -63,16 +68,46 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
     ): View? {
         _binding = FragmentAllListBinding.inflate(inflater, container, false)
         imageVideoFilesListAdapter =
-            ImageVideoFilesListAdapter(::onFolderItemClicked, utils, fileHelper, requireActivity())
+            ImageVideoFilesListAdapter(::onFolderItemClicked,::onSearchEnableGetCounts ,utils, fileHelper, requireActivity())
         return binding.root
     }
 
     private fun onFolderItemClicked(mediaModel: MediaModel) {
-        val bundle = Bundle().apply {
-            putString(Constants.REDIRECTION_TYPE, redirectionType)
-            putString(Constants.DIRECTORY_PATH, mediaModel.file.path)
+        if (redirectionType.equals(Constants.GENERAL)) {
+            if (mediaModel.file.isDirectory) {
+                val bundle = Bundle().apply {
+                    putString(Constants.REDIRECTION_TYPE, Constants.GENERAL)
+                    putString(Constants.DIRECTORY_PATH, mediaModel.file.path)
+                }
+                findNavController().navigate(R.id.action_imagesFragments_self, bundle)
+            } else {
+                fileHelper.openFile(mediaModel.file.path)
+            }
+        } else {
+            val bundle = Bundle().apply {
+                putString(Constants.REDIRECTION_TYPE, redirectionType)
+                putString(Constants.DIRECTORY_PATH, mediaModel.file.path)
+            }
+            findNavController().navigate(R.id.action_imagesFragments_to_allFragments, bundle)
         }
-        findNavController().navigate(R.id.action_imagesFragments_to_allFragments, bundle)
+    }
+
+    private fun onSearchEnableGetCounts(listSize: Int) {
+        binding.noDataAvailable.root.isVisible=listSize==0
+        val title = redirectionType.let {
+            var titleSuffix =
+                if (redirectionType.equals(Constants.GENERAL)) {
+                    File(directoryPath).name
+                } else {
+                    it
+                }
+            titleSuffix.plus(" (${listSize})")
+        }
+        binding.include.collapsingToolbar.title = title
+        binding.include.toolbar.title = title
+
+        binding.include.collapsingToolbar.title = title
+        binding.include.toolbar.title = title
     }
 
 
@@ -82,6 +117,7 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
         bindObservers()
         setToolbar()
         setClickListener()
+        setSearchView()
         binding.rvList.setHasFixedSize(true)
         binding.rvList.setItemViewCacheSize(20)
         binding.rvList.adapter = imageVideoFilesListAdapter
@@ -98,6 +134,44 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
         imageVideoFilesListAdapter.updateViewType(booleanSecuredPreference)
+    }
+
+    private fun setSearchView() {
+        binding.include.btnSearch.setOnClickListener({
+            showSearchView(true)
+        })
+
+        binding.include.commonSearchView.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                imageVideoFilesListAdapter.getFilter().filter(newText)
+                return false
+            }
+        })
+
+
+
+        binding.include.ivCrossSearchView.setOnClickListener({
+            if (binding.include.commonSearchView.query!!.isEmpty()) {
+                showSearchView(false)
+            } else {
+                binding.include.commonSearchView.setQuery("", false)
+            }
+        })
+    }
+
+
+    fun showSearchView(isShow: Boolean) {
+        isSearchEnable=isShow
+        binding.include.btnBack.isVisible = !isShow
+        binding.include.btnSearch.isVisible = !isShow
+        binding.include.btnGridViewListView.isVisible = !isShow
+        binding.include.neumorphSearchView.isVisible = isShow
     }
 
 
@@ -129,6 +203,14 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
                 Constants.VIDEO -> {
                     downloadViewModel.getVideosFilesList()
                 }
+
+                Constants.GENERAL -> {
+                    directoryPath.let {
+                        downloadViewModel.getAllFilesOfDirectory(
+                            File(it)
+                        )
+                    }
+                }
             }
         }
     }
@@ -143,6 +225,20 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
                 Constants.VIDEO -> {
                     setVideosObserver()
                 }
+
+                Constants.GENERAL -> {
+                    setAllFilesOfDirectoryObserver()
+                }
+
+            }
+        }
+    }
+
+    private fun setAllFilesOfDirectoryObserver() {
+        lifecycleScope.launch {
+            downloadViewModel.allFilesOfDirectory.collect { result ->
+                hideProgressBar()
+                manageMediaListResponseData(result)
             }
         }
     }
@@ -169,7 +265,8 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
         when (it) {
             is FilesResult.Success -> {
                 updateToolBarTitlesFolders(it)
-                binding.rvList.isVisible = true
+                val empty = it.data!!.isEmpty()
+                binding.noDataAvailable.root.isVisible = empty
                 imageVideoFilesListAdapter.updateFiles(it.data!!)
             }
 
@@ -194,7 +291,15 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
     }
 
     private fun updateToolBarTitlesFolders(filesList: FilesResult<List<MediaModel>>) {
-        val title = redirectionType.let { it.plus(" (${filesList.data?.size})") }
+        val title = redirectionType.let {
+            var titleSuffix =
+                if (redirectionType.equals(Constants.GENERAL)) {
+                    File(directoryPath).name
+                } else {
+                    it
+                }
+            titleSuffix.plus(" (${filesList.data?.size})")
+        }
         binding.include.collapsingToolbar.title = title
         binding.include.toolbar.title = title
     }
@@ -202,15 +307,20 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
 
     private fun setToolbar() {
         redirectionType.let {
-            binding.include.collapsingToolbar.title = it
-            binding.include.toolbar.title = it
+            if (it.equals(Constants.GENERAL)) {
+                binding.include.collapsingToolbar.title = File(directoryPath).name
+                binding.include.toolbar.title = File(directoryPath).name
+            } else {
+                binding.include.collapsingToolbar.title = it
+                binding.include.toolbar.title = it
+            }
+
         }
         binding.include.collapsingToolbar.isTitleEnabled = true
         binding.include.collapsingToolbar.expandedTitleGravity =
             Gravity.CENTER_HORIZONTAL
         binding.include.collapsingToolbar.setExpandedTitleTextAppearance(R.style.expandedAppBar)
         binding.include.collapsingToolbar.setCollapsedTitleTextAppearance(R.style.collapsedAppBar)
-        binding.include.etSearchView.hint = getString(R.string.search)
     }
 
     private fun setClickListener() {
@@ -234,16 +344,17 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
     override fun onBackPressed(): Boolean {
         // Return true if back press is handled in the fragment
         return if (shouldHandleCustomBackPress()) {
+            binding.include.ivCrossSearchView.performClick()
             true
         } else {
             // Let the activity handle it
-            false
+            findNavController().popBackStack()
         }
     }
 
     private fun shouldHandleCustomBackPress(): Boolean {
         // Your custom conditions here
-        return false
+        return isSearchEnable
     }
 
 

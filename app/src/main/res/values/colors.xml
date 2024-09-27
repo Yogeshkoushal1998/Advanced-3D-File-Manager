@@ -13,6 +13,8 @@
     <color name="card_shadow_dark_white_theme">#C7D4E6</color>
     <color name="card_color">#F2F3F7</color>
     <color name="dia_bg_color_white_theme">#D9EFEEEE</color>
+    <color name="timeTextColor">#9696B2</color>
+
 
     <color name="txt_blue">#136af6</color>
     <color name="red">#f63030</color>

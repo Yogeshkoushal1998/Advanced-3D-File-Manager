@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_imagesFragments_to_allFragments"
             app:destination="@id/allFragments" />
+        <action
+            android:id="@+id/action_imagesFragments_self"
+            app:destination="@id/imagesFragments" />
     </fragment>
 
     <fragment

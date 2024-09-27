@@ -65,12 +65,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.android.spinkit)
     implementation(libs.mp.android.chart)
-
     implementation(libs.glide)
     kapt(libs.glide.compiler)
-
-    implementation("androidx.preference:preference:1.1.1")
-    implementation("androidx.security:security-crypto:1.1.0-alpha03")
-
-
+    implementation(libs.preference)
+    implementation(libs.security.crypto)
 }

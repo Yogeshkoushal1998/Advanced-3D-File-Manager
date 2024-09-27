@@ -72,16 +72,14 @@
                 <soup.neumorphism.NeumorphImageView
                     android:id="@+id/btnSearch"
                     style="@style/neuCardStyle"
-                    android:visibility="gone"
                     android:layout_width="@dimen/_50sdp"
                     android:layout_height="@dimen/_50sdp"
-                    android:layout_alignParentEnd="true"
                     android:layout_toStartOf="@+id/btnGridViewListView"
-                    android:padding="@dimen/_18sdp"
+                    android:padding="@dimen/_11sdp"
                     app:actionViewClass="androidx.appcompat.widget.SearchView"
                     app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
                     app:neumorph_shapeType="flat"
-                    app:srcCompat="@drawable/ic_neumorph_search" />
+                    app:srcCompat="@drawable/ic_neumorphic_search" />
 
 
                 <soup.neumorphism.NeumorphImageView
@@ -94,7 +92,6 @@
                     app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
                     app:neumorph_shapeType="flat"
                     app:srcCompat="@drawable/ic_list_view" />
-
 
                 <soup.neumorphism.NeumorphCardView
                     android:id="@+id/neumorphSearchView"
@@ -111,37 +108,31 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:paddingStart="@dimen/_15sdp"
-                        android:paddingEnd="0dp">
+                        android:orientation="horizontal">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/ic_search_bar"
-                            tools:ignore="ContentDescription" />
 
-                        <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/etSearchView"
+                        <androidx.appcompat.widget.SearchView
+                            android:id="@+id/commonSearchView"
                             android:layout_width="0dp"
+                            style="@style/SearchEditTextTheme"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@android:color/transparent"
-                            android:backgroundTint="@color/red"
-                            android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
+                            android:clickable="true"
                             android:focusable="true"
                             android:fontFamily="@font/almendra"
-                            android:hint="@string/search"
                             android:imeOptions="actionSearch"
-                            android:paddingStart="@dimen/_5sdp"
-                            android:paddingEnd="@dimen/_5sdp"
                             android:singleLine="true"
-                            android:textColor="@color/search_text_color"
+                            android:textColor="@color/color_606060"
                             android:textColorHint="@color/search_hint_text_color"
                             android:textSize="@dimen/_12ssp"
-                            android:theme="@style/SearchEditTextTheme"
                             android:visibility="visible"
+                            app:closeIcon="@null"
+                            android:hint="@string/search"
+                            app:iconifiedByDefault="false"
+                            app:queryBackground="@null"
+                            app:searchHintIcon="@drawable/ic_search_bar"
+                            app:searchIcon="@drawable/ic_search_bar"
                             tools:ignore="RtlSymmetry" />
 
                         <soup.neumorphism.NeumorphImageView
@@ -150,7 +141,7 @@
                             android:layout_width="@dimen/_40sdp"
                             android:layout_height="@dimen/_40sdp"
                             android:gravity="center"
-                            android:padding="@dimen/_15sdp"
+                            android:padding="@dimen/_8sdp"
                             app:neumorph_shapeAppearance="@style/CustomShapeAppearance1"
                             app:neumorph_shapeType="flat"
                             app:neumorph_strokeColor="@color/screen_color_white_theme"
@@ -160,6 +151,7 @@
                     </LinearLayout>
 
                 </soup.neumorphism.NeumorphCardView>
+
 
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>

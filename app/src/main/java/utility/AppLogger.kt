@@ -4,7 +4,7 @@ import android.util.Log
 
 
 object AppLogger {
-    private const val DEBUG = false
+    private const val DEBUG = true
     private const val TAG_PREFIX = "@3D File Manager: "
 
     fun v(tag: String?, string: String) {

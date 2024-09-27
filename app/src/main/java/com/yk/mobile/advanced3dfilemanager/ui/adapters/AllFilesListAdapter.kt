@@ -1,10 +1,11 @@
 package com.yk.mobile.advanced3dfilemanager.ui.adapters
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -20,18 +21,26 @@ import java.util.Locale
 
 class AllFilesListAdapter(
     private val onFileItemClicked: (File) -> Unit,
+    private val onSearchEnableGetCounts: (Int) -> Unit,
     private val utils: Utils,
     private val fileHelper: FileHelper,
     private val context: Context
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
 
     private var files: List<File> = listOf()
+
+    private var filteredFiles: List<File> = listOf()
 
     private var isListView: Boolean = true;
 
     private val VIEW_TYPE_LIST = 0
 
     private val VIEW_TYPE_GRID = 1
+
+
+    init {
+        filteredFiles = files // Start with the full list
+    }
 
     fun updateViewType(isListView: Boolean) {
         this.isListView = isListView
@@ -42,6 +51,7 @@ class AllFilesListAdapter(
     // Method to update the file list
     fun updateFiles(newFiles: List<File>) {
         files = newFiles
+        filteredFiles = files
         notifyDataSetChanged() // Update the entire list; consider optimizing for large datasets
     }
 
@@ -66,7 +76,7 @@ class AllFilesListAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val file = files[position]
+        val file = filteredFiles[position]
         if (holder is ListViewHolder) {
             (holder as ListViewHolder).bind(file)
         } else if (holder is GridViewHolder) {
@@ -76,7 +86,7 @@ class AllFilesListAdapter(
 
 
     override fun getItemCount(): Int {
-        return files.size
+        return filteredFiles.size
     }
 
     inner class ListViewHolder(private val binding: AllTypeFileListItemBinding) :
@@ -114,7 +124,7 @@ class AllFilesListAdapter(
                     }
 
                     Constants.APP -> {
-                        binding.ivDocTypeIcon.setImageDrawable(getApkIcon(context, file.path))
+                        binding.ivDocTypeIcon.setImageDrawable(utils.getApkIcon(context, file.path))
                     }
 
                     else -> {
@@ -138,8 +148,6 @@ class AllFilesListAdapter(
         fun bind(file: File) {
             binding.tvFileName.text = file.name
             binding.tvFileSize.text = Formatter.formatFileSize(binding.root.context, file.length())
-            binding.tvModifiedTime.text =
-                utils.getFormatedDate(file.lastModified(), Constants.DATE_FORMAT_V1)
             if (!file.isDirectory()) {
                 val type: String = file.name.substring(file.name.lastIndexOf('.') + 1)
                 val fileType = fileHelper.getFileType(file)
@@ -168,7 +176,7 @@ class AllFilesListAdapter(
                     }
 
                     Constants.APP -> {
-                        binding.ivDocTypeIcon.setImageDrawable(getApkIcon(context, file.path))
+                        binding.ivDocTypeIcon.setImageDrawable(utils.getApkIcon(context, file.path))
                     }
 
                     else -> {
@@ -187,19 +195,8 @@ class AllFilesListAdapter(
     }
 
 
-    private fun getApkIcon(context: Context, apkFilePath: String): Drawable? {
-        val packageManager = context.packageManager
-        val packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, 0)
-        packageInfo?.let {
-            it.applicationInfo.sourceDir = apkFilePath
-            it.applicationInfo.publicSourceDir = apkFilePath
-            return it.applicationInfo.loadIcon(packageManager)
-        }
-        return null
-    }
-
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return filteredFiles[position].lastModified()
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -209,4 +206,33 @@ class AllFilesListAdapter(
             VIEW_TYPE_GRID
         }
     }
+
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(constraint: CharSequence?): FilterResults {
+                val query = constraint?.toString()?.trim() ?: ""
+
+                filteredFiles = if (query.isEmpty()) {
+                    files // No query, return full list
+                } else {
+                    files.filter {
+                        // Filter by file name or any other criteria
+                        it.name.contains(query, ignoreCase = true)
+                    }
+                }
+
+                val filterResults = FilterResults()
+                filterResults.values = filteredFiles
+                return filterResults
+            }
+
+            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                filteredFiles = results?.values as List<File>
+                onSearchEnableGetCounts(filteredFiles.size)
+                notifyDataSetChanged()
+            }
+        }
+    }
+
 }

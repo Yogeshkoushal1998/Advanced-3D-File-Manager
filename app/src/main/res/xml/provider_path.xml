@@ -21,4 +21,7 @@
         path="." />
 
 
+    <external-path name="whatsapp_statuses" path="WhatsApp/Media/.Statuses/" />
+
+
 </paths>
