@@ -265,9 +265,9 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
         when (it) {
             is FilesResult.Success -> {
                 updateToolBarTitlesFolders(it)
+                imageVideoFilesListAdapter.updateFiles(it.data!!)
                 val empty = it.data!!.isEmpty()
                 binding.noDataAvailable.root.isVisible = empty
-                imageVideoFilesListAdapter.updateFiles(it.data!!)
             }
 
             is FilesResult.Error -> {
@@ -356,6 +356,7 @@ class ImagesFragments : Fragment(), OnBackPressedListener {
         // Your custom conditions here
         return isSearchEnable
     }
+
 
 
 }

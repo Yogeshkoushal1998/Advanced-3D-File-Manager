@@ -52,9 +52,7 @@ class UtilsModule {
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
                 )
-            } catch (e: GeneralSecurityException) {
-                AppLogger.ex(e)
-            } catch (e: IOException) {
+            } catch (e: Exception) {
                 AppLogger.ex(e)
             }
         }

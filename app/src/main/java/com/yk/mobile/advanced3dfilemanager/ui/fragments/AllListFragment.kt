@@ -205,7 +205,7 @@ class AllListFragment : Fragment(), OnBackPressedListener {
 
 
     fun showSearchView(isShow: Boolean) {
-        isSearchEnable=isShow
+        isSearchEnable = isShow
         binding.include.btnBack.isVisible = !isShow
         binding.include.btnSearch.isVisible = !isShow
         binding.include.btnGridViewListView.isVisible = !isShow
@@ -383,11 +383,9 @@ class AllListFragment : Fragment(), OnBackPressedListener {
         when (it) {
             is FilesResult.Success -> {
                 updateToolBarTitles(it)
-                it.let {
-                    val empty = it.data!!.isEmpty()
-                    adapter.updateFiles(it.data!!)
-                    binding.noDataAvailable.root.isVisible = empty
-                }
+                adapter.updateFiles(it.data!!)
+                val empty = it.data!!.isEmpty()
+                binding.noDataAvailable.root.isVisible = empty
             }
 
             is FilesResult.Error -> {
@@ -462,5 +460,6 @@ class AllListFragment : Fragment(), OnBackPressedListener {
         // Your custom conditions here
         return isSearchEnable
     }
+
 
 }
